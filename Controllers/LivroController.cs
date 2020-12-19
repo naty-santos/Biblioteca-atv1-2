@@ -38,6 +38,7 @@ namespace Biblioteca.Controllers
                 objFiltro.Filtro = filtro;
                 objFiltro.TipoFiltro = tipoFiltro;
             }
+
             LivroService livroService = new LivroService();
             return View(livroService.ListarTodos(objFiltro));
         }
