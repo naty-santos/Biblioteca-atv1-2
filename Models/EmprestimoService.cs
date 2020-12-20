@@ -6,38 +6,76 @@ namespace Biblioteca.Models
 {
     public class EmprestimoService 
     {
-        public void Inserir(Emprestimo e)
+        public bool Inserir(Emprestimo e)
         {
+            if(emprestimo_valido(e)){
             using(BibliotecaContext bc = new BibliotecaContext())
             {
                 bc.Emprestimos.Add(e);
                 bc.SaveChanges();
+                return true;
             }
         }
-
-        public void Atualizar(Emprestimo e)
+        return false;
+        }
+        public bool Atualizar(Emprestimo e)
+       
         {
+             if(emprestimo_valido(e)){
             using(BibliotecaContext bc = new BibliotecaContext())
             {
+               try{
                 Emprestimo emprestimo = bc.Emprestimos.Find(e.Id);
-                emprestimo.NomeUsuario = e.NomeUsuario;
+                  emprestimo.NomeUsuario = e.NomeUsuario;
                 emprestimo.Telefone = e.Telefone;
                 emprestimo.LivroId = e.LivroId;
                 emprestimo.DataEmprestimo = e.DataEmprestimo;
                 emprestimo.DataDevolucao = e.DataDevolucao;
 
                 bc.SaveChanges();
+                return true;
+               }catch{
+                   return false;
+               }
             }
         }
-
-        public ICollection<Emprestimo> ListarTodos(FiltrosEmprestimos filtro)
+            return false;
+        }
+        public List<Emprestimo> ListarTodos(FiltrosEmprestimos filtro)
         {
             using(BibliotecaContext bc = new BibliotecaContext())
+
             {
-                return bc.Emprestimos.Include(e => e.Livro).ToList();
+                List<Emprestimo> query;
+                if(filtro != null)
+                {
+                    switch(filtro.TipoFiltro)
+                    {
+                        case "Usuario":
+                        query = bc.Emprestimos.Where(e => e.NomeUsuario.ToLower().Contains(filtro.Filtro.ToLower())).OrderByDescending(e => e.DataDevolucao).Include(e => e.Livro).ToList();
+                        break;
+
+                        case "Livro":
+                        query = bc.Emprestimos.Where(e => e.Livro.Titulo.ToLower().Contains(filtro.Filtro.ToLower())).OrderByDescending(e => e.DataDevolucao).Include(e => e.Livro).ToList();
+                        break;
+
+                       
+
+                         default:
+                            query = bc.Emprestimos.Include(e => e.Livro).ToList();
+                        break;
+                    }
+                }
+                else{
+                    query = bc.Emprestimos.Include(e => e.Livro).ToList();
+                
+                }
+                return query.OrderBy(e => e.Id).Reverse().OrderBy(e =>e.Devolvido).ToList();
             }
         }
 
+
+              
         public Emprestimo ObterPorId(int id)
         {
             using(BibliotecaContext bc = new BibliotecaContext())
@@ -45,5 +83,9 @@ namespace Biblioteca.Models
                 return bc.Emprestimos.Find(id);
             }
         }
+        private bool emprestimo_valido(Emprestimo e){
+            return (!string.IsNullOrEmpty(e.NomeUsuario) && !string.IsNullOrEmpty(e.Telefone));
+        }
     }
+
 }
