@@ -70,7 +70,7 @@ namespace Biblioteca.Models
                     query = bc.Emprestimos.Include(e => e.Livro).ToList();
                 
                 }
-                return query.OrderBy(e => e.Id).Reverse().OrderBy(e =>e.Devolvido).ToList();
+                return query.OrderBy(e => e.DataDevolucao).Reverse().OrderBy(e =>e.Devolvido).ToList();
             }
         }
 
