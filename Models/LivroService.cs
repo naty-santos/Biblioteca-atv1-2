@@ -28,11 +28,11 @@ namespace Biblioteca.Models
             }
         }
 
-        public ICollection<Livro> ListarTodos(FiltrosLivros filtro = null)
+        public List<Livro> ListarTodos(FiltrosLivros filtro = null)
         {
             using(BibliotecaContext bc = new BibliotecaContext())
             {
-                IQueryable<Livro> query;
+                List<Livro> query;
                 
                 if(filtro != null)
                 {
@@ -40,42 +40,67 @@ namespace Biblioteca.Models
                     switch(filtro.TipoFiltro)
                     {
                         case "Autor":
-                            query = bc.Livros.Where(l => l.Autor.Contains(filtro.Filtro));
+                            query = bc.Livros.Where(l => l.Autor.Contains(filtro.Filtro)).ToList();
                         break;
 
                         case "Titulo":
-                            query = bc.Livros.Where(l => l.Titulo.Contains(filtro.Filtro));
+                            query = bc.Livros.Where(l => l.Titulo.Contains(filtro.Filtro)).ToList();
                         break;
 
                         default:
-                            query = bc.Livros;
+                            query = bc.Livros.ToList();
                         break;
                     }
                 }
                 else
                 {
                     // caso filtro não tenha sido informado
-                    query = bc.Livros;
+                    query = bc.Livros.ToList();
                 }
                 
                 //ordenação padrão
-                return query.OrderBy(l => l.Titulo).ToList();
+                return query.OrderBy(l => l.Id).Reverse().ToList();
             }
         }
 
-        public ICollection<Livro> ListarDisponiveis()
+        public ICollection<Livro> ListarDisponiveis(Emprestimo emprestimo)
         {
             using(BibliotecaContext bc = new BibliotecaContext())
             {
+            
+                //busca os livros onde o id não está entre os ids de livro em empréstimo
+                // utiliza uma subconsulta
+                ICollection<Livro>disponiveis = bc.Livros
+                    
+                    .Where(l =>  !(bc.Emprestimos.Where(e => e.Devolvido == false).Select(e => e.LivroId).Contains(l.Id)) )
+                    .ToList();
+                    if(!disponiveis.Contains(ObterPorId(emprestimo.LivroId)))
+                    disponiveis.Add(ObterPorId(emprestimo.LivroId));
+                    return disponiveis.OrderBy(l => l.Titulo).ToList();
+                    
+            }
+            
+        }
+
+         public ICollection<Livro> ListarDisponiveis()
+        {
+            using(BibliotecaContext bc = new BibliotecaContext())
+            {
+            
                 //busca os livros onde o id não está entre os ids de livro em empréstimo
                 // utiliza uma subconsulta
                 return
-                    bc.Livros
+                bc.Livros
+                    
                     .Where(l =>  !(bc.Emprestimos.Where(e => e.Devolvido == false).Select(e => e.LivroId).Contains(l.Id)) )
                     .ToList();
+                  
+                    
             }
+            
         }
 
+        
         public Livro ObterPorId(int id)
         {
             using(BibliotecaContext bc = new BibliotecaContext())

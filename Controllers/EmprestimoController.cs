@@ -61,8 +61,9 @@ namespace Biblioteca.Controllers
             Emprestimo e = em.ObterPorId(id);
 
             CadEmprestimoViewModel cadModel = new CadEmprestimoViewModel();
-            cadModel.Livros = livroService.ListarDisponiveis();
-            cadModel.Emprestimo = e;
+             cadModel.Emprestimo = e;
+            cadModel.Livros = livroService.ListarDisponiveis(e);
+           
             
             return View(cadModel);
         }

@@ -11,7 +11,7 @@
             <legend>Usuario</legend>
             <div class="form-group">
                 <label asp-for="Emprestimo.NomeUsuario">Nome</label>
-                <input asp-for="Emprestimo.NomeUsuario" class="form-control" readonly="readonly"/>
+                <input asp-for="Emprestimo.NomeUsuario" class="form-control"/>
             </div>
             <div class="form-group">
                 <label asp-for="Emprestimo.Telefone">Telefone</label>
@@ -38,8 +38,13 @@
                 </select>
             </div>
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" asp-for="Emprestimo.Devolvido" />
-                <label class="form-check-label" for="Devolvido">Devolvido</label>
+               
+    <label>Devolvido</label>
+    <input type="checkbox" asp-for="Emprestimo.Devolvido" value="true">
+    <br>
+    <label>Atrasado</label>
+    <input type="checkbox" >
+
             </div>
         </fieldset>
         <input type="submit" value="Salvar" class="btn btn-primary"/>
