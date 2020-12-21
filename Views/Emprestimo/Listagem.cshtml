@@ -36,15 +36,32 @@
             <tbody>
                 @foreach(Emprestimo e in Model)
                 {
-                <tr>
-                    <td>@e.Id</td>
-                    <td>@e.NomeUsuario</td>
-                    <td>@e.DataEmprestimo.ToString("dd/MM/yyyy")</td>
-                    <td>@e.DataDevolucao.ToString("dd/MM/yyyy")</td>
-                    <td>@e.Livro.Titulo</td>
-                    <td>@e.Livro.Autor</td>
-                    <td><a href="/Emprestimo/Edicao/@e.Id">Editar</a></td>
-                </tr>
+                    @if(DateTime.Compare(DateTime.Today, e.DataDevolucao)>0 || e.Devolvido==true)
+                    {
+
+                        <tr>
+                        <td>@e.Id</td>
+                        <td class="text-danger">@e.NomeUsuario</td>
+                        <td class="text-danger">@e.DataEmprestimo.ToString("dd/MM/yyyy")</td>
+                        <td  class="text-danger">@e.DataDevolucao.ToString("dd/MM/yyyy")</td>
+                        <td  class="text-danger">@e.Livro.Titulo</td>
+                        <td class="text-danger">@e.Livro.Autor</td>
+                        <td class="text-danger">@e.Devolvido<a href="/Emprestimo/Edicao/@e.Id" class="text-success">Editar</a></td>
+                        </tr>
+                        }
+                        else{
+                        <tr>
+                        <td>@e.Id</td>
+                        <td class="text-success">@e.NomeUsuario</td>
+                        <td class="text-success">@e.DataEmprestimo.ToString("dd/MM/yyyy")</td>
+                        <td class="text-success">@e.DataDevolucao.ToString("dd/MM/yyyy")</td>
+                        <td class="text-success">@e.Livro.Titulo</td>
+                        <td class="text-success">@e.Livro.Autor</td>
+                        <td class="text-success"><a href="/Emprestimo/Edicao/@e.Id">Editar</a></td>
+                        
+                       </tr>
+                    }
+                   
                 }
             </tbody>
         </table>
