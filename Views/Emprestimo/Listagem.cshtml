@@ -36,7 +36,7 @@
             <tbody>
                 @foreach(Emprestimo e in Model)
                 {
-                    @if(DateTime.Compare(DateTime.Today, e.DataDevolucao)>0 || e.Devolvido==true)
+                    @if(DateTime.Compare(DateTime.Today, e.DataDevolucao)>0)
                     {
 
                         <tr>
@@ -46,7 +46,7 @@
                         <td  class="text-danger">@e.DataDevolucao.ToString("dd/MM/yyyy")</td>
                         <td  class="text-danger">@e.Livro.Titulo</td>
                         <td class="text-danger">@e.Livro.Autor</td>
-                        <td class="text-danger">@e.Devolvido<a href="/Emprestimo/Edicao/@e.Id" class="text-success">Editar</a></td>
+                        <td class="text-danger"><a href="/Emprestimo/Edicao/@e.Id" class="text-danger">Editar</a></td>
                         </tr>
                         }
                         else{
